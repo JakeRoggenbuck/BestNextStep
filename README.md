@@ -6,3 +6,6 @@ For the backend, I am using Django
 
 ## Frontend (Impulse)
 For the frontend, I am using svelte
+
+## Old Concept Design
+![Screenshot 2022-06-02 at 13-35-11 portfolio](https://user-images.githubusercontent.com/35516367/171733905-ae2404e0-ba92-49a7-aa85-d62e76e6b072.png)
