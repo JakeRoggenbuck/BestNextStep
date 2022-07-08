@@ -28,9 +28,11 @@ func (r *SQLiteRepository) Migrate() error {
 	query := `
     CREATE TABLE IF NOT EXISTS steps(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        desc TEXT NOT NULL,
 		left INTEGER,
-		right INTEGER
+		right INTEGER,
+		owner INTEGER NOT NULL
     );
     `
 
@@ -39,7 +41,7 @@ func (r *SQLiteRepository) Migrate() error {
 }
 
 func (r *SQLiteRepository) Create(step Step) (*Step, error) {
-	res, err := r.db.Exec("INSERT INTO steps(name, left, right) values(?,?,?)", step.Name, step.Left, step.Right)
+	res, err := r.db.Exec("INSERT INTO steps(name, desc, left, right, owner) values(?,?,?,?,?)", step.Name, step.Desc, step.Left, step.Right, step.Owner)
 	if err != nil {
 		var sqliteErr sqlite3.Error
 		if errors.As(err, &sqliteErr) {
@@ -60,7 +62,7 @@ func (r *SQLiteRepository) Create(step Step) (*Step, error) {
 }
 
 func (r *SQLiteRepository) All() ([]Step, error) {
-	rows, err := r.db.Query("SELECT * FROM websites")
+	rows, err := r.db.Query("SELECT * FROM steps")
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +71,7 @@ func (r *SQLiteRepository) All() ([]Step, error) {
 	var all []Step
 	for rows.Next() {
 		var step Step
-		if err := rows.Scan(&step.ID, &step.Name, &step.Left, &step.Right); err != nil {
+		if err := rows.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Owner); err != nil {
 			return nil, err
 		}
 		all = append(all, step)
@@ -77,11 +79,11 @@ func (r *SQLiteRepository) All() ([]Step, error) {
 	return all, nil
 }
 
-func (r *SQLiteRepository) GetByName(name string) (*Step, error) {
-	row := r.db.QueryRow("SELECT * FROM steps WHERE name = ?", name)
+func (r *SQLiteRepository) GetByID(id int64) (*Step, error) {
+	row := r.db.QueryRow("SELECT * FROM steps WHERE id = ?", id)
 
 	var step Step
-	if err := row.Scan(&step.ID, &step.Name, &step.Left, &step.Right); err != nil {
+	if err := row.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Owner); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotExists
 		}
@@ -94,7 +96,7 @@ func (r *SQLiteRepository) Update(id int64, updated Step) (*Step, error) {
 	if id == 0 {
 		return nil, errors.New("invalid updated ID")
 	}
-	res, err := r.db.Exec("UPDATE steps SET name = ?, left = ?, right = ? WHERE id = ?", updated.Name, updated.Left, updated.Right, id)
+	res, err := r.db.Exec("UPDATE steps SET name = ?, desc = ?, left = ?, right = ?, owner = ? WHERE id = ?", updated.Name, updated.Desc, updated.Left, updated.Right, updated.Owner, id)
 	if err != nil {
 		return nil, err
 	}
