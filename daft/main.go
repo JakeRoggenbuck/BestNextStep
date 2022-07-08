@@ -5,7 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
+	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 )
+
+const dbName = "sqlite.db"
 
 func getLogIn() gin.Accounts {
 	password := os.Getenv("ADMIN_PASSWORD")
@@ -30,6 +33,7 @@ func setupLogging() {
 
 func main() {
 	setupLogging()
+
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"192.168.86.245"})
 	router.LoadHTMLGlob("./web/templates/**/*")
