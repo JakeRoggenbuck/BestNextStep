@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
+	"github.com/jakeroggenbuck/BestNextStep/daft/user"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
@@ -94,12 +95,20 @@ func main() {
 		log.Fatal("Database open failed")
 	}
 
+	stepRepository := step.NewSQLiteRepository(db)
+	if err := stepRepository.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+
+	userRepository := user.NewSQLiteRepository(db)
+	if err := userRepository.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+
 	// Create default items if db is new
 	if !dbExisted {
 		createDefaultElements(db)
 	}
-
-	stepRepository := step.NewSQLiteRepository(db)
 
 	router := gin.Default()
 	router.SetTrustedProxies([]string{getLocalIP()})
@@ -114,6 +123,11 @@ func main() {
 
 	authedSubRoute.GET("/all", func(c *gin.Context) {
 		c.String(http.StatusOK, fmt.Sprint(stepRepository.All()))
+	})
+
+	authedSubRoute.GET("/new-user", func(c *gin.Context) {
+		userRepository.Create(user.User{Name: "Jake", PasswordHash: "123"})
+		c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
 	})
 
 	listenPort := os.Getenv("PORT")
