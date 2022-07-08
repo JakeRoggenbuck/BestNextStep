@@ -7,10 +7,10 @@ import (
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"github.com/jakeroggenbuck/BestNextStep/daft/user"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"os"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func getLogIn() gin.Accounts {
@@ -88,13 +88,13 @@ func dbExists() bool {
 }
 
 func HashPassword(password string) (string, error) {
-    bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-    return string(bytes), err
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
 
 func CheckPasswordHash(password, hash string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-    return err == nil
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func main() {
@@ -146,7 +146,7 @@ func main() {
 
 			c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
 		} else {
-			c.String(http.StatusNotAcceptable, "name or password empty" + name + password)
+			c.String(http.StatusNotAcceptable, "name or password empty"+name+password)
 		}
 
 	})
