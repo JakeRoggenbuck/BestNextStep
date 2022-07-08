@@ -40,14 +40,14 @@ func createDefaultElements(db *sql.DB) {
 
 	stepOne := step.Step{
 		Name:  "Step One",
-		Desc: "The first step.",
+		Desc:  "The first step.",
 		Left:  -1,
 		Right: 2,
 		Owner: 1,
 	}
 	stepTwo := step.Step{
 		Name:  "Step Two",
-		Desc: "The second step.",
+		Desc:  "The second step.",
 		Left:  1,
 		Right: -1,
 		Owner: 1,
