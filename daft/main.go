@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
+	"net/http"
 )
 
 func getLogIn() gin.Accounts {
@@ -76,6 +77,7 @@ func main() {
 	}
 
 	createDefaultElements(db)
+	stepRepository := step.NewSQLiteRepository(db)
 
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"192.168.86.245"})
@@ -87,6 +89,10 @@ func main() {
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 
 	authedSubRoute.GET("/", apiRootPage)
+
+	authedSubRoute.GET("/all", func(c *gin.Context) {
+		c.String(http.StatusOK, fmt.Sprint(stepRepository.All()))
+	})
 
 	listenPort := os.Getenv("PORT")
 	if listenPort == "" {
