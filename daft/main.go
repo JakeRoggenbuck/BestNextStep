@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func getLogIn() gin.Accounts {
@@ -86,6 +87,16 @@ func dbExists() bool {
 	return false
 }
 
+func HashPassword(password string) (string, error) {
+    bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+    return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+    return err == nil
+}
+
 func main() {
 	setupLogging()
 
@@ -125,9 +136,19 @@ func main() {
 		c.String(http.StatusOK, fmt.Sprint(stepRepository.All()))
 	})
 
-	authedSubRoute.GET("/new-user", func(c *gin.Context) {
-		userRepository.Create(user.User{Name: "Jake", PasswordHash: "123"})
-		c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
+	authedSubRoute.POST("/new-user", func(c *gin.Context) {
+		name := c.PostForm("name")
+		password := c.PostForm("password")
+
+		if name != "" && password != "" {
+			hash, _ := HashPassword(password)
+			userRepository.Create(user.User{Name: name, PasswordHash: hash})
+
+			c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
+		} else {
+			c.String(http.StatusNotAcceptable, "name or password empty" + name + password)
+		}
+
 	})
 
 	listenPort := os.Getenv("PORT")
