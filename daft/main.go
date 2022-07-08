@@ -1,14 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jakeroggenbuck/BestNextStep/daft/step"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
-	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 )
-
-const dbName = "sqlite.db"
 
 func getLogIn() gin.Accounts {
 	password := os.Getenv("ADMIN_PASSWORD")
@@ -33,6 +33,41 @@ func setupLogging() {
 
 func main() {
 	setupLogging()
+
+	db, err := sql.Open("sqlite3", "sqlite.db")
+	if err != nil {
+		log.Fatal("AHHH")
+	}
+
+	stepRepository := step.NewSQLiteRepository(db)
+
+	if err := stepRepository.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+
+	stepOne := step.Step{
+		Name:  "Step One",
+		Left:  -1,
+		Right: 2,
+	}
+	stepTwo := step.Step{
+		Name:  "Step Two",
+		Left:  1,
+		Right: -1,
+	}
+
+	createdStepOne, err := stepRepository.Create(stepOne)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	createdStepTwo, err := stepRepository.Create(stepTwo)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(createdStepOne)
+	fmt.Println(createdStepTwo)
 
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"192.168.86.245"})
