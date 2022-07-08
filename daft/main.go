@@ -31,14 +31,7 @@ func setupLogging() {
 	log.SetOutput(file)
 }
 
-func main() {
-	setupLogging()
-
-	db, err := sql.Open("sqlite3", "sqlite.db")
-	if err != nil {
-		log.Fatal("AHHH")
-	}
-
+func createDefaultElements(db *sql.DB) {
 	stepRepository := step.NewSQLiteRepository(db)
 
 	if err := stepRepository.Migrate(); err != nil {
@@ -68,6 +61,17 @@ func main() {
 
 	fmt.Println(createdStepOne)
 	fmt.Println(createdStepTwo)
+}
+
+func main() {
+	setupLogging()
+
+	db, err := sql.Open("sqlite3", "sqlite.db")
+	if err != nil {
+		log.Fatal("Database open failed")
+	}
+
+	createDefaultElements(db)
 
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"192.168.86.245"})
