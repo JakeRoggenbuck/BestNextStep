@@ -7,8 +7,8 @@ import (
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"os"
 	"net/http"
+	"os"
 )
 
 func getLogIn() gin.Accounts {
@@ -21,6 +21,16 @@ func getLogIn() gin.Accounts {
 	return gin.Accounts{
 		"Admin": password,
 	}
+}
+
+func getLocalIP() string {
+	ip := os.Getenv("LOCAL_IP")
+	if ip == "" {
+		fmt.Printf("LOCAL_IP not set")
+		log.Fatal("LOCAL_IP not set")
+	}
+
+	return ip
 }
 
 func setupLogging() {
@@ -68,15 +78,27 @@ func createDefaultElements(db *sql.DB) {
 	fmt.Println(createdStepTwo)
 }
 
+func dbExists() bool {
+	if _, err := os.Stat("./sqlite.db"); err == nil {
+		return true
+	}
+	return false
+}
+
 func main() {
 	setupLogging()
 
+	dbExisted := dbExists()
 	db, err := sql.Open("sqlite3", "sqlite.db")
 	if err != nil {
 		log.Fatal("Database open failed")
 	}
 
-	createDefaultElements(db)
+	// Create default items if db is new
+	if !dbExisted {
+		createDefaultElements(db)
+	}
+
 	stepRepository := step.NewSQLiteRepository(db)
 
 	router := gin.Default()
