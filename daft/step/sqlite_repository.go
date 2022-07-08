@@ -41,7 +41,8 @@ func (r *SQLiteRepository) Migrate() error {
 }
 
 func (r *SQLiteRepository) Create(step Step) (*Step, error) {
-	res, err := r.db.Exec("INSERT INTO steps(name, desc, left, right, owner) values(?,?,?,?,?)", step.Name, step.Desc, step.Left, step.Right, step.Owner)
+	insert := "INSERT INTO steps(name, desc, left, right, owner) values(?,?,?,?,?)"
+	res, err := r.db.Exec(insert, step.Name, step.Desc, step.Left, step.Right, step.Owner)
 	if err != nil {
 		var sqliteErr sqlite3.Error
 		if errors.As(err, &sqliteErr) {
@@ -96,7 +97,8 @@ func (r *SQLiteRepository) Update(id int64, updated Step) (*Step, error) {
 	if id == 0 {
 		return nil, errors.New("invalid updated ID")
 	}
-	res, err := r.db.Exec("UPDATE steps SET name = ?, desc = ?, left = ?, right = ?, owner = ? WHERE id = ?", updated.Name, updated.Desc, updated.Left, updated.Right, updated.Owner, id)
+	update := "UPDATE steps SET name = ?, desc = ?, left = ?, right = ?, owner = ? WHERE id = ?"
+	res, err := r.db.Exec(update, updated.Name, updated.Desc, updated.Left, updated.Right, updated.Owner, id)
 	if err != nil {
 		return nil, err
 	}
