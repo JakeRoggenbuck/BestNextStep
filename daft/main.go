@@ -102,7 +102,7 @@ func main() {
 	stepRepository := step.NewSQLiteRepository(db)
 
 	router := gin.Default()
-	router.SetTrustedProxies([]string{"192.168.86.245"})
+	router.SetTrustedProxies([]string{getLocalIP()})
 	router.LoadHTMLGlob("./web/templates/**/*")
 
 	router.GET("/", homePage)
