@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"github.com/jakeroggenbuck/BestNextStep/daft/user"
@@ -125,6 +126,8 @@ func main() {
 	router.SetTrustedProxies([]string{getLocalIP()})
 	router.LoadHTMLGlob("./web/templates/**/*")
 
+	router.Use(cors.Default())
+
 	router.GET("/", homePage)
 
 	authAccount := getLogIn()
@@ -146,7 +149,7 @@ func main() {
 
 			c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
 		} else {
-			c.String(http.StatusNotAcceptable, "name or password empty"+name+password)
+			c.String(http.StatusNotAcceptable, "name or password empty")
 		}
 
 	})
