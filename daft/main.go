@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -136,7 +137,22 @@ func main() {
 	authedSubRoute.GET("/", apiRootPage)
 
 	authedSubRoute.GET("/all", func(c *gin.Context) {
-		c.String(http.StatusOK, fmt.Sprint(stepRepository.All()))
+
+		all, err := stepRepository.All()
+		if err != nil {
+			fmt.Print(err)
+		}
+
+		all_json, err := json.Marshal(all)
+		if err != nil {
+			fmt.Print(err)
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": string(all_json),
+		})
+
 	})
 
 	authedSubRoute.POST("/new-user", func(c *gin.Context) {
