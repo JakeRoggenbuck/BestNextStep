@@ -131,13 +131,15 @@ func main() {
 
 	router.GET("/", homePage)
 
+	// New auth for normal users in userRepository
+	// https://github.com/yasaricli/gah
+	// https://chenyitian.gitbooks.io/gin-tutorials/content/tdd/8.html
 	authAccount := getLogIn()
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 
 	authedSubRoute.GET("/", apiRootPage)
 
 	authedSubRoute.GET("/all", func(c *gin.Context) {
-
 		all, err := stepRepository.All()
 		if err != nil {
 			fmt.Print(err)
@@ -152,7 +154,6 @@ func main() {
 			"code":    http.StatusOK,
 			"message": string(all_json),
 		})
-
 	})
 
 	authedSubRoute.POST("/new-user", func(c *gin.Context) {
