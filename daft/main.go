@@ -147,7 +147,7 @@ func main() {
 
 	})
 
-	listenPort := GetEnvOrDefault("PORT", "1357	")
+	listenPort := GetEnvOrDefault("PORT", "1357")
 	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
 	router.Run(":" + listenPort)
 }
