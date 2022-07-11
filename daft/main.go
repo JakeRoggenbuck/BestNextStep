@@ -70,11 +70,11 @@ func main() {
 
 	router.Use(cors.Default())
 
-	/* 
+	/*
 
 		GET => 		/ 						homePage
 		GET => 		/version 				version
-		
+
 
 		AUTHED USER		Group	/api/v1
 		===========		=====	=======
@@ -114,6 +114,18 @@ func main() {
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 
 	authedSubRoute.GET("/", apiRootPage)
+
+	stepSubRoute := authedSubRoute.Group("/step/")
+	stepSubRoute.GET("/", func(c *gin.Context) { allStep(db) })
+	stepSubRoute.POST("/add", func(c *gin.Context) { addStep(db) })
+	stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(db) })
+	stepSubRoute.DELETE("/delete", func(c *gin.Context) { deleteStep(db) })
+
+	colSubRoute := authedSubRoute.Group("/col/")
+	colSubRoute.GET("/", func(c *gin.Context) { allCol(db) })
+	colSubRoute.POST("/add", func(c *gin.Context) { addCol(db) })
+	colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(db) })
+	colSubRoute.DELETE("/delete", func(c *gin.Context) { deleteCol(db) })
 
 	authedSubRoute.GET("/all", func(c *gin.Context) {
 		all, err := stepRepository.All()

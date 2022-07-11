@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
-	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"database/sql"
 	"fmt"
+	"github.com/jakeroggenbuck/BestNextStep/daft/step"
+	"log"
 )
 
 func createDefaultElements(db *sql.DB) {
