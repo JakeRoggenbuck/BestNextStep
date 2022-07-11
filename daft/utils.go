@@ -15,7 +15,7 @@ func GetEnvOrDefault(env_var string, default_var string) string {
 	}
 }
 
-func GetEnvOrDeFatal(env_var string) string {
+func GetEnvOrFatal(env_var string) string {
 	item := os.Getenv(env_var)
 	if item == "" {
 		fmt.Printf("%s not set", env_var)

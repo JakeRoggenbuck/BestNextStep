@@ -15,25 +15,13 @@ import (
 )
 
 func getLogIn() gin.Accounts {
-	password := os.Getenv("ADMIN_PASSWORD")
-	if password == "" {
-		fmt.Printf("ADMIN_PASSWORD not set")
-		log.Fatal("ADMIN_PASSWORD not set")
-	}
-
 	return gin.Accounts{
-		"Admin": password,
+		"Admin": GetEnvOrFatal("ADMIN_PASSWORD"),
 	}
 }
 
 func getLocalIP() string {
-	ip := os.Getenv("LOCAL_IP")
-	if ip == "" {
-		fmt.Printf("LOCAL_IP not set")
-		log.Fatal("LOCAL_IP not set")
-	}
-
-	return ip
+	return GetEnvOrDefault("LOCAL_IP", "127.0.0.1")
 }
 
 func setupLogging() {
@@ -43,42 +31,6 @@ func setupLogging() {
 	}
 
 	log.SetOutput(file)
-}
-
-func createDefaultElements(db *sql.DB) {
-	stepRepository := step.NewSQLiteRepository(db)
-
-	if err := stepRepository.Migrate(); err != nil {
-		log.Fatal(err)
-	}
-
-	stepOne := step.Step{
-		Name:  "Step One",
-		Desc:  "The first step.",
-		Left:  -1,
-		Right: 2,
-		Owner: 1,
-	}
-	stepTwo := step.Step{
-		Name:  "Step Two",
-		Desc:  "The second step.",
-		Left:  1,
-		Right: -1,
-		Owner: 1,
-	}
-
-	createdStepOne, err := stepRepository.Create(stepOne)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	createdStepTwo, err := stepRepository.Create(stepTwo)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(createdStepOne)
-	fmt.Println(createdStepTwo)
 }
 
 func dbExists() bool {
@@ -117,6 +69,41 @@ func main() {
 	router.LoadHTMLGlob("./web/templates/**/*")
 
 	router.Use(cors.Default())
+
+	/* 
+
+		GET => 		/ 						homePage
+		GET => 		/version 				version
+		
+
+		AUTHED USER		Group	/api/v1
+		===========		=====	=======
+
+		GET => 		/api/v1/				apiRootPage
+
+		GET => 		/api/v1/step			allStep
+		POST => 	/api/v1/step/add		addStep
+		PUT => 		/api/v1/step/update		updateStep
+		DELETE => 	/api/v1/step/delete		deleteStep
+
+		GET => 		/api/v1/col				allCol
+		POST => 	/api/v1/col/add			addCol
+		PUT => 		/api/v1/col/update		updateCol
+		DELETE => 	/api/v1/col/delete		deleteCol
+
+		GET => 		/api/v1/user			allUser
+		POST => 	/api/v1/user/add		addUser
+		PUT => 		/api/v1/user/update		updateUser
+		DELETE => 	/api/v1/user/delete		deleteUser
+
+		ADMIN USER		Group	/api/v1/admin
+		==========		=====	=============
+
+		GET =>		/api/v1/admin/stats				allStats
+		GET =>		/api/v1/admin/stats/user-count	userCount
+		GET =>		/api/v1/admin/stats/step-count	stepCount
+
+	*/
 
 	router.GET("/", homePage)
 
@@ -160,11 +147,7 @@ func main() {
 
 	})
 
-	listenPort := os.Getenv("PORT")
-	if listenPort == "" {
-		listenPort = "1357"
-	}
-
+	listenPort := GetEnvOrDefault("PORT", "1357	")
 	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
 	router.Run(":" + listenPort)
 }

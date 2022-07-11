@@ -32,6 +32,7 @@ func (r *SQLiteRepository) Migrate() error {
         desc TEXT NOT NULL,
 		left INTEGER,
 		right INTEGER,
+		collection INTEGER NOT NULL,
 		owner INTEGER NOT NULL
     );
     `
@@ -41,8 +42,8 @@ func (r *SQLiteRepository) Migrate() error {
 }
 
 func (r *SQLiteRepository) Create(step Step) (*Step, error) {
-	insert := "INSERT INTO steps(name, desc, left, right, owner) values(?,?,?,?,?)"
-	res, err := r.db.Exec(insert, step.Name, step.Desc, step.Left, step.Right, step.Owner)
+	insert := "INSERT INTO steps(name, desc, left, right, collection, owner) values(?,?,?,?,?,?)"
+	res, err := r.db.Exec(insert, step.Name, step.Desc, step.Left, step.Right, step.Collection, step.Owner)
 	if err != nil {
 		var sqliteErr sqlite3.Error
 		if errors.As(err, &sqliteErr) {
@@ -72,7 +73,7 @@ func (r *SQLiteRepository) All() ([]Step, error) {
 	var all []Step
 	for rows.Next() {
 		var step Step
-		if err := rows.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Owner); err != nil {
+		if err := rows.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Collection, &step.Owner); err != nil {
 			return nil, err
 		}
 		all = append(all, step)
@@ -84,7 +85,7 @@ func (r *SQLiteRepository) GetByID(id int64) (*Step, error) {
 	row := r.db.QueryRow("SELECT * FROM steps WHERE id = ?", id)
 
 	var step Step
-	if err := row.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Owner); err != nil {
+	if err := row.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Collection, &step.Owner); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotExists
 		}
@@ -97,8 +98,8 @@ func (r *SQLiteRepository) Update(id int64, updated Step) (*Step, error) {
 	if id == 0 {
 		return nil, errors.New("invalid updated ID")
 	}
-	update := "UPDATE steps SET name = ?, desc = ?, left = ?, right = ?, owner = ? WHERE id = ?"
-	res, err := r.db.Exec(update, updated.Name, updated.Desc, updated.Left, updated.Right, updated.Owner, id)
+	update := "UPDATE steps SET name = ?, desc = ?, left = ?, right = ?, collection = ?, owner = ? WHERE id = ?"
+	res, err := r.db.Exec(update, updated.Name, updated.Desc, updated.Left, updated.Right, updated.Collection, updated.Owner, id)
 	if err != nil {
 		return nil, err
 	}
