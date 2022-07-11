@@ -9,7 +9,6 @@ import (
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"github.com/jakeroggenbuck/BestNextStep/daft/user"
 	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"os"
@@ -87,16 +86,6 @@ func dbExists() bool {
 		return true
 	}
 	return false
-}
-
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }
 
 func main() {
