@@ -124,13 +124,13 @@ func main() {
 
 	// stepSubRoute.POST("/add", func(c *gin.Context) { addStep(c, stepRepository) })
 	// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
-	// stepSubRoute.DELETE("/delete", func(c *gin.Context) { deleteStep(c, stepRepository) })
+	stepSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteStep(c, stepRepository) })
 
 	colSubRoute := authedSubRoute.Group("/col/")
 	colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
 	// colSubRoute.POST("/add", func(c *gin.Context) { addCol(c, colRepository) })
 	// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
-	// colSubRoute.DELETE("/delete", func(c *gin.Context) { deleteCol(c, colRepository) })
+	colSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
 
 	// authedSubRoute.POST("/new-user", func(c *gin.Context) {
 	// 	name := c.PostForm("name")
