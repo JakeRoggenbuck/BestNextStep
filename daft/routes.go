@@ -11,6 +11,10 @@ import (
 	"strconv"
 )
 
+func getUserId(c *gin.Context) int64 {
+	return int64(1)
+}
+
 func homePage(c *gin.Context) {
 	c.HTML(http.StatusOK, "HomePage", nil)
 }
@@ -20,7 +24,7 @@ func apiRootPage(c *gin.Context) {
 }
 
 func allStep(c *gin.Context, repo *step.SQLiteRepository) {
-	owner := int64(1)
+	owner := getUserId(c)
 
 	all, err := repo.GetByOwner(owner)
 	if err != nil {
@@ -38,14 +42,35 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 	})
 }
 
-func addStep(c *gin.Context, db *sql.DB)    {}
+func addStep(c *gin.Context, repo *step.SQLiteRepository) {
+	owner := getUserId(c)
+
+	collection := c.Param("collection")
+	col, err := strconv.Atoi(collection)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":    http.StatusNotFound,
+			"message": "Given Collection not found.",
+		})
+	}
+
+	stepToAdd := step.Step{
+		Name:       c.Param("name"),
+		Desc:       c.Param("desc"),
+		Collection: int64(col),
+		Owner:      owner,
+	}
+
+	repo.Create(stepToAdd)
+}
+
 func updateStep(c *gin.Context, db *sql.DB) {}
 
 func deleteStep(c *gin.Context, repo *step.SQLiteRepository) {
 	id := c.Param("id")
 	i, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"code":    http.StatusNotFound,
 			"message": "Given ID not found.",
 		})
@@ -60,7 +85,7 @@ func deleteStep(c *gin.Context, repo *step.SQLiteRepository) {
 }
 
 func allCol(c *gin.Context, repo *col.SQLiteRepository) {
-	owner := int64(1)
+	owner := getUserId(c)
 
 	all, err := repo.GetByOwner(owner)
 	if err != nil {
