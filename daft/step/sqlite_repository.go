@@ -15,13 +15,13 @@ var (
 )
 
 type SQLiteRepository struct {
-       db *sql.DB
+	db *sql.DB
 }
 
 func NewSQLiteRepository(db *sql.DB) *SQLiteRepository {
-       return &SQLiteRepository{
-               db: db,
-       }
+	return &SQLiteRepository{
+		db: db,
+	}
 }
 
 func (r *SQLiteRepository) Migrate() error {
