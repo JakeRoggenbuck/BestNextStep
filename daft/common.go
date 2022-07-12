@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
+	"github.com/jakeroggenbuck/BestNextStep/daft/col"
 	"log"
 )
 
@@ -19,6 +19,7 @@ func createDefaultElements(db *sql.DB) {
 		Desc:  "The first step.",
 		Left:  -1,
 		Right: 2,
+		Collection: 1,
 		Owner: 1,
 	}
 	stepTwo := step.Step{
@@ -26,19 +27,24 @@ func createDefaultElements(db *sql.DB) {
 		Desc:  "The second step.",
 		Left:  1,
 		Right: -1,
+		Collection: 1,
 		Owner: 1,
 	}
 
-	createdStepOne, err := stepRepository.Create(stepOne)
-	if err != nil {
-		fmt.Println(err)
+	stepRepository.Create(stepOne)
+	stepRepository.Create(stepTwo)
+
+	colRepository := col.NewSQLiteRepository(db)
+
+	if err := stepRepository.Migrate(); err != nil {
+		log.Fatal(err)
 	}
 
-	createdStepTwo, err := stepRepository.Create(stepTwo)
-	if err != nil {
-		fmt.Println(err)
+	colOne := col.Col{
+		Name:  "First Task",
+		Desc:  "The first task that I have to do.",
+		Owner: 1,
 	}
 
-	fmt.Println(createdStepOne)
-	fmt.Println(createdStepTwo)
+	colRepository.Create(colOne)
 }

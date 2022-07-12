@@ -15,13 +15,13 @@ var (
 )
 
 type SQLiteRepository struct {
-	db *sql.DB
+       db *sql.DB
 }
 
 func NewSQLiteRepository(db *sql.DB) *SQLiteRepository {
-	return &SQLiteRepository{
-		db: db,
-	}
+       return &SQLiteRepository{
+               db: db,
+       }
 }
 
 func (r *SQLiteRepository) Migrate() error {
@@ -83,6 +83,37 @@ func (r *SQLiteRepository) All() ([]Step, error) {
 
 func (r *SQLiteRepository) GetByID(id int64) (*Step, error) {
 	row := r.db.QueryRow("SELECT * FROM steps WHERE id = ?", id)
+
+	var step Step
+	if err := row.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Collection, &step.Owner); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNotExists
+		}
+		return nil, err
+	}
+	return &step, nil
+}
+
+func (r *SQLiteRepository) GetByOwner(id int64) ([]Step, error) {
+	rows, err := r.db.Query("SELECT * FROM steps WHERE owner = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var all []Step
+	for rows.Next() {
+		var step Step
+		if err := rows.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Collection, &step.Owner); err != nil {
+			return nil, err
+		}
+		all = append(all, step)
+	}
+	return all, nil
+}
+
+func (r *SQLiteRepository) GetByCollection(col int64) (*Step, error) {
+	row := r.db.QueryRow("SELECT * FROM steps WHERE collection = ?", col)
 
 	var step Step
 	if err := row.Scan(&step.ID, &step.Name, &step.Desc, &step.Left, &step.Right, &step.Collection, &step.Owner); err != nil {

@@ -91,6 +91,24 @@ func (r *SQLiteRepository) GetByID(id int64) (*Col, error) {
 	return &col, nil
 }
 
+func (r *SQLiteRepository) GetByOwner(id int64) ([]Col, error) {
+	rows, err := r.db.Query("SELECT * FROM cols WHERE owner = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var all []Col
+	for rows.Next() {
+		var col Col
+		if err := rows.Scan(&col.ID, &col.Name, &col.Desc, &col.Owner); err != nil {
+			return nil, err
+		}
+		all = append(all, col)
+	}
+	return all, nil
+}
+
 func (r *SQLiteRepository) Update(id int64, updated Col) (*Col, error) {
 	if id == 0 {
 		return nil, errors.New("invalid updated ID")

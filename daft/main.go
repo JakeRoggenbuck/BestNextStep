@@ -2,15 +2,14 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"github.com/jakeroggenbuck/BestNextStep/daft/user"
+	"github.com/jakeroggenbuck/BestNextStep/daft/col"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -51,6 +50,11 @@ func main() {
 
 	stepRepository := step.NewSQLiteRepository(db)
 	if err := stepRepository.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+
+	colRepository := col.NewSQLiteRepository(db)
+	if err := colRepository.Migrate(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -116,48 +120,32 @@ func main() {
 	authedSubRoute.GET("/", apiRootPage)
 
 	stepSubRoute := authedSubRoute.Group("/step/")
-	stepSubRoute.GET("/", func(c *gin.Context) { allStep(db) })
-	stepSubRoute.POST("/add", func(c *gin.Context) { addStep(db) })
-	stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(db) })
-	stepSubRoute.DELETE("/delete", func(c *gin.Context) { deleteStep(db) })
+	stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
+
+	// stepSubRoute.POST("/add", func(c *gin.Context) { addStep(c, stepRepository) })
+	// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
+	// stepSubRoute.DELETE("/delete", func(c *gin.Context) { deleteStep(c, stepRepository) })
 
 	colSubRoute := authedSubRoute.Group("/col/")
-	colSubRoute.GET("/", func(c *gin.Context) { allCol(db) })
-	colSubRoute.POST("/add", func(c *gin.Context) { addCol(db) })
-	colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(db) })
-	colSubRoute.DELETE("/delete", func(c *gin.Context) { deleteCol(db) })
+	colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
+	// colSubRoute.POST("/add", func(c *gin.Context) { addCol(c, colRepository) })
+	// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
+	// colSubRoute.DELETE("/delete", func(c *gin.Context) { deleteCol(c, colRepository) })
 
-	authedSubRoute.GET("/all", func(c *gin.Context) {
-		all, err := stepRepository.All()
-		if err != nil {
-			fmt.Print(err)
-		}
+	// authedSubRoute.POST("/new-user", func(c *gin.Context) {
+	// 	name := c.PostForm("name")
+	// 	password := c.PostForm("password")
 
-		all_json, err := json.Marshal(all)
-		if err != nil {
-			fmt.Print(err)
-		}
+	// 	if name != "" && password != "" {
+	// 		hash, _ := HashPassword(password)
+	// 		userRepository.Create(user.User{Name: name, PasswordHash: hash})
 
-		c.JSON(http.StatusOK, gin.H{
-			"code":    http.StatusOK,
-			"message": string(all_json),
-		})
-	})
+	// 		c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
+	// 	} else {
+	// 		c.String(http.StatusNotAcceptable, "name or password empty")
+	// 	}
 
-	authedSubRoute.POST("/new-user", func(c *gin.Context) {
-		name := c.PostForm("name")
-		password := c.PostForm("password")
-
-		if name != "" && password != "" {
-			hash, _ := HashPassword(password)
-			userRepository.Create(user.User{Name: name, PasswordHash: hash})
-
-			c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
-		} else {
-			c.String(http.StatusNotAcceptable, "name or password empty")
-		}
-
-	})
+	// })
 
 	listenPort := GetEnvOrDefault("PORT", "1357")
 	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
