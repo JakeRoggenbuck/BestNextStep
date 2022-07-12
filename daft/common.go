@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"github.com/jakeroggenbuck/BestNextStep/daft/col"
+	"github.com/jakeroggenbuck/BestNextStep/daft/step"
 	"log"
 )
 
@@ -15,20 +15,20 @@ func createDefaultElements(db *sql.DB) {
 	}
 
 	stepOne := step.Step{
-		Name:  "Step One",
-		Desc:  "The first step.",
-		Left:  -1,
-		Right: 2,
+		Name:       "Step One",
+		Desc:       "The first step.",
+		Left:       -1,
+		Right:      2,
 		Collection: 1,
-		Owner: 1,
+		Owner:      1,
 	}
 	stepTwo := step.Step{
-		Name:  "Step Two",
-		Desc:  "The second step.",
-		Left:  1,
-		Right: -1,
+		Name:       "Step Two",
+		Desc:       "The second step.",
+		Left:       1,
+		Right:      -1,
 		Collection: 1,
-		Owner: 1,
+		Owner:      1,
 	}
 
 	stepRepository.Create(stepOne)
