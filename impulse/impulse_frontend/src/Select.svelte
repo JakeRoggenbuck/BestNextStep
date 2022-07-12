@@ -2,8 +2,8 @@
   import "./app.css";
   import { onMount } from "svelte";
 
-	  let cols;
-	  let selected;
+  let cols;
+  let selected;
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/col/`, {
@@ -21,7 +21,13 @@
 </script>
 
 <div>
-  <select class="glass" name="membership" id="membership" bind:value={selected} on:change="{() => alert(selected)}">
+  <select
+    class="glass"
+    name="membership"
+    id="membership"
+    bind:value={selected}
+    on:change={() => alert(selected)}
+  >
     {#if cols}
       {#each cols as col}
         <option value={col._id}>{col.name}</option>
@@ -30,5 +36,5 @@
       <p class="loading">loading...</p>
     {/if}
   </select>
-  <slot {selected}/>
+  <slot {selected} />
 </div>

@@ -4,24 +4,8 @@
   import Select from "./Select.svelte";
   import "./app.css";
 
-	  let steps;
-
-  onMount(async () => {
-    await fetch(`http://127.0.0.1:1357/api/v1/step/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic " + btoa("Admin:banana"),
-      },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-			  steps = JSON.parse(data["message"]);
-      });
-	  });
-
-	  let cols;
-	  let selected = 1;
+  let cols;
+  let selected = 1;
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/col/`, {
@@ -37,33 +21,70 @@
       });
   });
 
+  let steps;
+  let current;
+
+  onMount(async () => {
+    await fetch(`http://127.0.0.1:1357/api/v1/step/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic " + btoa("Admin:banana"),
+      },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        steps = JSON.parse(data["message"]);
+
+        current = steps.filter(inCollection);
+      });
+  });
+
+  function inCollection(x) {
+    return x["collection"] == selected;
+  }
+
+  function setCurrent() {
+    current = steps.filter(inCollection);
+  }
 </script>
 
 <main>
-	<h1>Best Next Step {selected}</h1>
-<div>
-  <select class="glass" name="membership" id="membership" bind:value={selected}>
-    {#if cols}
-      {#each cols as col}
-        <option value={col._id}>{col.name}</option>
-      {/each}
-    {:else}
-      <p class="loading">loading...</p>
-    {/if}
-  </select>
-  <slot {selected}/>
-</div>
+  <h1>Best Next Step</h1>
+  <div>
+    <select
+      class="glass"
+      name="membership"
+      id="membership"
+      bind:value={selected}
+      on:change={() => setCurrent()}
+    >
+      {#if cols}
+        {#each cols as col}
+          <option value={col._id}>{col.name}</option>
+        {/each}
+      {:else}
+        <p class="loading">loading...</p>
+      {/if}
+    </select>
+    <slot {selected} />
+  </div>
 
   <div align="center">
-    {#if steps}
-      {#each steps as step}
+    {#if current}
+      {#each current as step}
         <Step {step} />
       {/each}
     {:else}
       <p class="loading">loading...</p>
     {/if}
   </div>
+
 </main>
+
+<div class="footer">
+	<a href="https://BestNextStep.org">BestNextStep.org</a> - Jake Roggenbuck - <a href="https://jr0.org">jr0.org</a> - <a href="https://github.com/jakeroggenbuck/BestNextStep">Source Code</a>
+</div>
 
 <style>
   :global(body) {
@@ -73,6 +94,11 @@
       rgba(174, 228, 238, 1) 0%,
       rgba(148, 187, 233, 1) 100%
     );
+  }
+
+  .footer {
+	  font-size: 20px;
+	  margin: 10px;
   }
 
   main {
@@ -87,7 +113,8 @@
     -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    margin: 4px;
+	margin: 4px;
+	height: 90%;
   }
 
   h1 {
