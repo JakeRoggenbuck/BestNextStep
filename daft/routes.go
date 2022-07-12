@@ -103,7 +103,18 @@ func allCol(c *gin.Context, repo *col.SQLiteRepository) {
 	})
 }
 
-func addCol(c *gin.Context, db *sql.DB)    {}
+func addCol(c *gin.Context, repo *col.SQLiteRepository) {
+	owner := getUserId(c)
+
+	colToAdd := col.Col{
+		Name:  c.Param("name"),
+		Desc:  c.Param("desc"),
+		Owner: owner,
+	}
+
+	repo.Create(colToAdd)
+}
+
 func updateCol(c *gin.Context, db *sql.DB) {}
 
 func deleteCol(c *gin.Context, repo *col.SQLiteRepository) {

@@ -111,9 +111,6 @@ func main() {
 
 	router.GET("/", homePage)
 
-	// New auth for normal users in userRepository
-	// https://github.com/yasaricli/gah
-	// https://chenyitian.gitbooks.io/gin-tutorials/content/tdd/8.html
 	authAccount := getLogIn()
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 
@@ -121,31 +118,15 @@ func main() {
 
 	stepSubRoute := authedSubRoute.Group("/step/")
 	stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
-
-	// stepSubRoute.POST("/add", func(c *gin.Context) { addStep(c, stepRepository) })
+	stepSubRoute.POST("/add", func(c *gin.Context) { addStep(c, stepRepository) })
 	// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
 	stepSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteStep(c, stepRepository) })
 
 	colSubRoute := authedSubRoute.Group("/col/")
 	colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
-	// colSubRoute.POST("/add", func(c *gin.Context) { addCol(c, colRepository) })
+	colSubRoute.POST("/add", func(c *gin.Context) { addCol(c, colRepository) })
 	// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
 	colSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
-
-	// authedSubRoute.POST("/new-user", func(c *gin.Context) {
-	// 	name := c.PostForm("name")
-	// 	password := c.PostForm("password")
-
-	// 	if name != "" && password != "" {
-	// 		hash, _ := HashPassword(password)
-	// 		userRepository.Create(user.User{Name: name, PasswordHash: hash})
-
-	// 		c.String(http.StatusOK, fmt.Sprint(userRepository.All()))
-	// 	} else {
-	// 		c.String(http.StatusNotAcceptable, "name or password empty")
-	// 	}
-
-	// })
 
 	listenPort := GetEnvOrDefault("PORT", "1357")
 	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
