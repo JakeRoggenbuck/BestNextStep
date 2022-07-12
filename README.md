@@ -1,4 +1,4 @@
-# Best Next Step
+# Best Next Step ![Go](https://img.shields.io/github/workflow/status/jakeroggenbuck/BestNextStep/Go?style=for-the-badge)
 Keep track of where you are on projects and what your Best Next Step is.
 
 ## Why
