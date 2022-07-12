@@ -37,7 +37,6 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":    http.StatusOK,
 		"message": string(all_json),
 	})
 }
@@ -49,9 +48,9 @@ func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	col, err := strconv.Atoi(collection)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"code":    http.StatusNotFound,
 			"message": "Given Collection not found.",
 		})
+		return
 	}
 
 	stepToAdd := step.Step{
@@ -71,15 +70,20 @@ func deleteStep(c *gin.Context, repo *step.SQLiteRepository) {
 	i, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"code":    http.StatusNotFound,
 			"message": "Given ID not found.",
 		})
+		return
 	}
 
-	repo.Delete(int64(i))
+	err = repo.Delete(int64(i))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Given ID not found.",
+		})
+		return
+	}
 
-	c.JSON(http.StatusNotFound, gin.H{
-		"code":    http.StatusNotFound,
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Deleted " + id,
 	})
 }
@@ -98,7 +102,6 @@ func allCol(c *gin.Context, repo *col.SQLiteRepository) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":    http.StatusOK,
 		"message": string(all_json),
 	})
 }
@@ -121,16 +124,21 @@ func deleteCol(c *gin.Context, repo *col.SQLiteRepository) {
 	id := c.Param("id")
 	i, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    http.StatusNotFound,
+		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Given ID not found.",
 		})
+		return
 	}
 
-	repo.Delete(int64(i))
+	err = repo.Delete(int64(i))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Given ID not found.",
+		})
+		return
+	}
 
-	c.JSON(http.StatusNotFound, gin.H{
-		"code":    http.StatusNotFound,
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Deleted " + id,
 	})
 }

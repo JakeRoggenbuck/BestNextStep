@@ -86,19 +86,19 @@ func main() {
 		GET => 		/api/v1/				apiRootPage
 
 		GET => 		/api/v1/step			allStep
-		POST => 	/api/v1/step/add		addStep
-		PUT => 		/api/v1/step/update		updateStep
-		DELETE => 	/api/v1/step/delete		deleteStep
+		POST => 	/api/v1/step/			addStep
+		PUT => 		/api/v1/step/			updateStep
+		DELETE => 	/api/v1/step/			deleteStep
 
 		GET => 		/api/v1/col				allCol
-		POST => 	/api/v1/col/add			addCol
-		PUT => 		/api/v1/col/update		updateCol
-		DELETE => 	/api/v1/col/delete		deleteCol
+		POST => 	/api/v1/col/			addCol
+		PUT => 		/api/v1/col/			updateCol
+		DELETE => 	/api/v1/col/			deleteCol
 
 		GET => 		/api/v1/user			allUser
-		POST => 	/api/v1/user/add		addUser
-		PUT => 		/api/v1/user/update		updateUser
-		DELETE => 	/api/v1/user/delete		deleteUser
+		POST => 	/api/v1/user/			addUser
+		PUT => 		/api/v1/user/			updateUser
+		DELETE => 	/api/v1/user/			deleteUser
 
 		ADMIN USER		Group	/api/v1/admin
 		==========		=====	=============
@@ -113,20 +113,25 @@ func main() {
 
 	authAccount := getLogIn()
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
+	{
+		authedSubRoute.GET("/", apiRootPage)
 
-	authedSubRoute.GET("/", apiRootPage)
+		stepSubRoute := authedSubRoute.Group("/step/")
+		{
+			stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
+			stepSubRoute.POST("/", func(c *gin.Context) { addStep(c, stepRepository) })
+			// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
+			stepSubRoute.DELETE("/:id", func(c *gin.Context) { deleteStep(c, stepRepository) })
+		}
 
-	stepSubRoute := authedSubRoute.Group("/step/")
-	stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
-	stepSubRoute.POST("/add", func(c *gin.Context) { addStep(c, stepRepository) })
-	// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
-	stepSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteStep(c, stepRepository) })
-
-	colSubRoute := authedSubRoute.Group("/col/")
-	colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
-	colSubRoute.POST("/add", func(c *gin.Context) { addCol(c, colRepository) })
-	// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
-	colSubRoute.DELETE("/delete/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
+		colSubRoute := authedSubRoute.Group("/col/")
+		{
+			colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
+			colSubRoute.POST("/", func(c *gin.Context) { addCol(c, colRepository) })
+			// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
+			colSubRoute.DELETE("/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
+		}
+	}
 
 	listenPort := GetEnvOrDefault("PORT", "1357")
 	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
