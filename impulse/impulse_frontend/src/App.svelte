@@ -1,7 +1,10 @@
 <script>
   import { onMount } from "svelte";
+  import Step from "./Step.svelte";
+  import Select from "./Select.svelte";
+  import "./app.css";
 
-  let steps;
+	  let steps;
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/step/`, {
@@ -13,21 +16,48 @@
     })
       .then((r) => r.json())
       .then((data) => {
-        steps = JSON.parse(data["message"]);
+			  steps = JSON.parse(data["message"]);
+      });
+	  });
+
+	  let cols;
+	  let selected = 1;
+
+  onMount(async () => {
+    await fetch(`http://127.0.0.1:1357/api/v1/col/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic " + btoa("Admin:banana"),
+      },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        cols = JSON.parse(data["message"]);
       });
   });
+
 </script>
 
 <main>
-  <h1>Best Next Step</h1>
+	<h1>Best Next Step {selected}</h1>
+<div>
+  <select class="glass" name="membership" id="membership" bind:value={selected}>
+    {#if cols}
+      {#each cols as col}
+        <option value={col._id}>{col.name}</option>
+      {/each}
+    {:else}
+      <p class="loading">loading...</p>
+    {/if}
+  </select>
+  <slot {selected}/>
+</div>
+
   <div align="center">
     {#if steps}
       {#each steps as step}
-        <div class="step">
-          <h2>{step._id}. {step.name}</h2>
-          <h4>{step.desc}</h4>
-          <h6>from collection {step.collection}</h6>
-        </div>
+        <Step {step} />
       {/each}
     {:else}
       <p class="loading">loading...</p>
@@ -36,11 +66,13 @@
 </main>
 
 <style>
-  .step {
-    background-color: #f5eef8;
-    width: 50%;
-    margin: 8px;
-    padding: 2px;
+  :global(body) {
+    background: rgb(174, 228, 238);
+    background: linear-gradient(
+      90deg,
+      rgba(174, 228, 238, 1) 0%,
+      rgba(148, 187, 233, 1) 100%
+    );
   }
 
   main {
@@ -48,13 +80,21 @@
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin: 4px;
   }
 
   h1 {
-    color: #9e8eff;
-    text-transform: uppercase;
+    margin-top: 0px;
+    color: #0b0d21;
     font-size: 4em;
-    font-weight: 300;
+    font-weight: 700;
   }
 
   @media (min-width: 640px) {
