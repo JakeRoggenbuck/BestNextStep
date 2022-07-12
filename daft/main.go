@@ -133,9 +133,9 @@ func main() {
 
 		userSubRoute := authedSubRoute.Group("/user/")
 		{
-			userSubRoute.POST("/", func(c *gin.Context) { addUser(c, colRepository) })
-			userSubRoute.PUT("/:id", func(c *gin.Context) { updateUser(c, colRepository) })
-			userSubRoute.DELETE("/:id", func(c *gin.Context) { deleteUser(c, colRepository) })
+			userSubRoute.POST("/", func(c *gin.Context) { addUser(c, userRepository) })
+			userSubRoute.PUT("/:id", func(c *gin.Context) { updateUser(c, userRepository) })
+			userSubRoute.DELETE("/:id", func(c *gin.Context) { deleteUser(c, userRepository) })
 		}
 	}
 
