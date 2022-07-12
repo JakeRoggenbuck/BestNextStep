@@ -120,7 +120,7 @@ func main() {
 		{
 			stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
 			stepSubRoute.POST("/", func(c *gin.Context) { addStep(c, stepRepository) })
-			// stepSubRoute.PUT("/update", func(c *gin.Context) { updateStep(c, stepRepository) })
+			stepSubRoute.PUT("/:id", func(c *gin.Context) { updateStep(c, stepRepository) })
 			stepSubRoute.DELETE("/:id", func(c *gin.Context) { deleteStep(c, stepRepository) })
 		}
 
@@ -128,7 +128,7 @@ func main() {
 		{
 			colSubRoute.GET("/", func(c *gin.Context) { allCol(c, colRepository) })
 			colSubRoute.POST("/", func(c *gin.Context) { addCol(c, colRepository) })
-			// colSubRoute.PUT("/update", func(c *gin.Context) { updateCol(c, colRepository) })
+			colSubRoute.PUT("/:id", func(c *gin.Context) { updateCol(c, colRepository) })
 			colSubRoute.DELETE("/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
 		}
 	}
