@@ -95,7 +95,6 @@ func main() {
 		PUT => 		/api/v1/col/			updateCol
 		DELETE => 	/api/v1/col/			deleteCol
 
-		GET => 		/api/v1/user			allUser
 		POST => 	/api/v1/user/			addUser
 		PUT => 		/api/v1/user/			updateUser
 		DELETE => 	/api/v1/user/			deleteUser
@@ -130,6 +129,13 @@ func main() {
 			colSubRoute.POST("/", func(c *gin.Context) { addCol(c, colRepository) })
 			colSubRoute.PUT("/:id", func(c *gin.Context) { updateCol(c, colRepository) })
 			colSubRoute.DELETE("/:id", func(c *gin.Context) { deleteCol(c, colRepository) })
+		}
+
+		userSubRoute := authedSubRoute.Group("/user/")
+		{
+			userSubRoute.POST("/", func(c *gin.Context) { addUser(c, colRepository) })
+			userSubRoute.PUT("/:id", func(c *gin.Context) { updateUser(c, colRepository) })
+			userSubRoute.DELETE("/:id", func(c *gin.Context) { deleteUser(c, colRepository) })
 		}
 	}
 

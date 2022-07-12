@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jakeroggenbuck/BestNextStep/daft/col"
 	"github.com/jakeroggenbuck/BestNextStep/daft/step"
+	"github.com/jakeroggenbuck/BestNextStep/daft/user"
 	"net/http"
 	"strconv"
 )
@@ -219,6 +220,82 @@ func deleteCol(c *gin.Context, repo *col.SQLiteRepository) {
 	}
 
 	err = repo.Delete(int64(i))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Given ID not found.",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Deleted successfully.",
+	})
+}
+
+func addUser(c *gin.Context, repo *user.SQLiteRepository) {
+	name := c.PostForm("name")
+	password := c.PostForm("password")
+
+	if name == "" || password == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Name or Password empty.",
+		})
+	}
+
+	hash, _ := HashPassword(password)
+
+	userToAdd := user.User{
+		Name:  name,
+		PasswordHash:  hash,
+	}
+
+	_, err := repo.Create(userToAdd)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Could not create.",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Created successfully.",
+	})
+}
+
+func updateUser(c *gin.Context, repo *user.SQLiteRepository) {
+	owner := getUserId(c)
+
+	name := c.PostForm("name")
+	password := c.PostForm("password")
+
+	if name == "" || password == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Name or Password empty.",
+		})
+	}
+
+	hash, _ := HashPassword(password)
+
+	userToUpdate := user.User{
+		Name:  name,
+		PasswordHash:  hash,
+	}
+
+	_, err := repo.Update(int64(owner), userToUpdate)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Could not update.",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Updated successfully.",
+	})
+}
+
+func deleteUser(c *gin.Context, repo *user.SQLiteRepository) {
+	owner := getUserId(c)
+	err := repo.Delete(int64(owner))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Given ID not found.",
