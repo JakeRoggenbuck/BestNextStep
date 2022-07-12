@@ -1,7 +1,6 @@
 <script>
   import { onMount } from "svelte";
   import Step from "./Step.svelte";
-  import Select from "./Select.svelte";
   import "./app.css";
 
   let cols;
