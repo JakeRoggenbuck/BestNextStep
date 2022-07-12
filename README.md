@@ -1,6 +1,8 @@
 # Best Next Step
 This repository was created on Arpil 28th in 2019 but never was pushed to and no code was written. It remained empty for over three years. I still have concept art from that time and want to continue this project with the skills I have now.
 
+Current update: Now this project has a full backend and frontend written with [Gin Gonic](https://github.com/gin-gonic/gin) and [Svelte](https://github.com/sveltejs/svelte)
+
 ## Backend (Daft)
 For the backend, I am using Gin
 ![image](https://user-images.githubusercontent.com/35516367/178548247-1eb67e82-3e7c-451f-adc1-e646135971aa.png)
