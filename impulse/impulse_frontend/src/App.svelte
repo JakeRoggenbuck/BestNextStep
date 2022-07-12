@@ -1,24 +1,30 @@
 <script>
-  import { onMount } from 'svelte';
-  let steps;
+  import { onMount } from "svelte";
+
+  let reminders;
   onMount(async () => {
-    await fetch(`http://127.0.0.1:1357/`, {
-      method: 'GET',
+    await fetch(`http://127.0.0.1:1357/api/v1/step/`, {
+      method: "GET",
       headers: {
-        Authorization: 'Basic ' + btoa('Admin:banana'),
+        "Content-Type": "application/json",
+        Authorization: "Basic " + btoa("Admin:banana"),
       },
-    }).then((data) => {
-      steps = data;
-    });
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log(data);
+      });
   });
+
+  console.log(reminders);
 </script>
 
 <main>
-  {#if steps}
-    {steps}
-  {:else}
-    <p class="loading">loading... ahh</p>
-  {/if}
+  <h1>Hello {reminders}!</h1>
+  <p>
+    Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
+    how to build Svelte apps.
+  </p>
 </main>
 
 <style>

@@ -72,7 +72,12 @@ func main() {
 	router.SetTrustedProxies([]string{getLocalIP()})
 	router.LoadHTMLGlob("./web/templates/**/*")
 
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://127.0.0.1:8080", "http://localhost:8080"}
+	corsConfig.AddAllowMethods("OPTIONS")
+	corsConfig.AllowHeaders = []string{"Origin", "Authorization", "content-type"}
+	corsConfig.AllowCredentials = true
+	router.Use(cors.New(corsConfig))
 
 	/*
 
