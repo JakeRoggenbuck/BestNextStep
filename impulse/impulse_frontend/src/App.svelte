@@ -11,6 +11,7 @@
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+	// Test Passowrd for running locally - not used in production
         Authorization: "Basic " + btoa("Admin:banana"),
       },
     })
@@ -28,6 +29,7 @@
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+	// Test Passowrd for running locally - not used in production
         Authorization: "Basic " + btoa("Admin:banana"),
       },
     })
