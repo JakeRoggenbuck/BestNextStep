@@ -19,10 +19,6 @@ func homePage(c *gin.Context) {
 	c.HTML(http.StatusOK, "HomePage", nil)
 }
 
-func apiRootPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "ApiRootPage", nil)
-}
-
 func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 	owner := getUserId(c)
 
@@ -97,10 +93,10 @@ func updateStep(c *gin.Context, repo *step.SQLiteRepository) {
 	}
 
 	stepToUpdate := step.Step{
-		Name:  c.PostForm("name"),
-		Desc:  c.PostForm("desc"),
+		Name:       c.PostForm("name"),
+		Desc:       c.PostForm("desc"),
 		Collection: int64(col),
-		Owner: owner,
+		Owner:      owner,
 	}
 
 	_, err = repo.Update(int64(i), stepToUpdate)
@@ -245,8 +241,8 @@ func addUser(c *gin.Context, repo *user.SQLiteRepository) {
 	hash, _ := HashPassword(password)
 
 	userToAdd := user.User{
-		Name:  name,
-		PasswordHash:  hash,
+		Name:         name,
+		PasswordHash: hash,
 	}
 
 	_, err := repo.Create(userToAdd)
@@ -276,8 +272,8 @@ func updateUser(c *gin.Context, repo *user.SQLiteRepository) {
 	hash, _ := HashPassword(password)
 
 	userToUpdate := user.User{
-		Name:  name,
-		PasswordHash:  hash,
+		Name:         name,
+		PasswordHash: hash,
 	}
 
 	_, err := repo.Update(int64(owner), userToUpdate)
@@ -305,5 +301,17 @@ func deleteUser(c *gin.Context, repo *user.SQLiteRepository) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Deleted successfully.",
+	})
+}
+
+func stepCountView(c *gin.Context, repo *step.SQLiteRepository) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": stepCount(repo),
+	})
+}
+
+func userCountView(c *gin.Context, repo *user.SQLiteRepository) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": userCount(repo),
 	})
 }

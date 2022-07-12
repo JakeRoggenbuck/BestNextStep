@@ -113,8 +113,6 @@ func main() {
 	authAccount := getLogIn()
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 	{
-		authedSubRoute.GET("/", apiRootPage)
-
 		stepSubRoute := authedSubRoute.Group("/step/")
 		{
 			stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
@@ -137,9 +135,28 @@ func main() {
 			userSubRoute.PUT("/:id", func(c *gin.Context) { updateUser(c, userRepository) })
 			userSubRoute.DELETE("/:id", func(c *gin.Context) { deleteUser(c, userRepository) })
 		}
+
+		adminSubRoute := authedSubRoute.Group("/admin/")
+		{
+
+			statsSubRoute := adminSubRoute.Group("/stats/")
+			{
+				statsSubRoute.GET("/user-count", func(c *gin.Context) { userCountView(c, userRepository) })
+				statsSubRoute.GET("/step-count", func(c *gin.Context) { stepCountView(c, stepRepository) })
+			}
+		}
 	}
 
 	listenPort := GetEnvOrDefault("PORT", "1357")
-	fmt.Print("\nHosted at http://localhost:" + listenPort + "\n")
+	fmt.Print(`
+ ▄▄▄▄▄▄  ▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄
+█      ██      █       █       █
+█  ▄    █  ▄   █    ▄▄▄█▄     ▄█
+█ █ █   █ █▄█  █   █▄▄▄  █   █  
+█ █▄█   █      █    ▄▄▄█ █   █  
+█       █  ▄   █   █     █   █  
+█▄▄▄▄▄▄██▄█ █▄▄█▄▄▄█     █▄▄▄█`)
+
+	fmt.Print("\n\nHosted at \"http://localhost:" + listenPort + "\"\n")
 	router.Run(":" + listenPort)
 }
