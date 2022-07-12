@@ -44,7 +44,8 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	owner := getUserId(c)
 
-	collection := c.Param("collection")
+	collection := c.PostForm("collection")
+	fmt.Println(collection)
 	col, err := strconv.Atoi(collection)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -54,13 +55,23 @@ func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	}
 
 	stepToAdd := step.Step{
-		Name:       c.Param("name"),
-		Desc:       c.Param("desc"),
+		Name:       c.PostForm("name"),
+		Desc:       c.PostForm("desc"),
 		Collection: int64(col),
 		Owner:      owner,
 	}
 
-	repo.Create(stepToAdd)
+	_, err = repo.Create(stepToAdd)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Could not add step.",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Added successfully.",
+	})
 }
 
 func updateStep(c *gin.Context, db *sql.DB) {}
@@ -110,8 +121,8 @@ func addCol(c *gin.Context, repo *col.SQLiteRepository) {
 	owner := getUserId(c)
 
 	colToAdd := col.Col{
-		Name:  c.Param("name"),
-		Desc:  c.Param("desc"),
+		Name:  c.PostForm("name"),
+		Desc:  c.PostForm("desc"),
 		Owner: owner,
 	}
 
