@@ -11,7 +11,7 @@
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-	// Test Passowrd for running locally - not used in production
+        // Test Passowrd for running locally - not used in production
         Authorization: "Basic " + btoa("Admin:banana"),
       },
     })
@@ -29,7 +29,7 @@
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-	// Test Passowrd for running locally - not used in production
+        // Test Passowrd for running locally - not used in production
         Authorization: "Basic " + btoa("Admin:banana"),
       },
     })
@@ -51,40 +51,66 @@
 </script>
 
 <main>
-  <h1>Best Next Step</h1>
-  <div>
-    <select
-      class="glass"
-      name="membership"
-      id="membership"
-      bind:value={selected}
-      on:change={() => setCurrent()}
-    >
-      {#if cols}
-        {#each cols as col}
-          <option value={col._id}>{col.name}</option>
-        {/each}
-      {:else}
-        <p class="loading">loading...</p>
-      {/if}
-    </select>
-    <slot {selected} />
-  </div>
-
   <div align="center">
-    {#if current}
-      {#each current as step}
-        <Step {step} />
-      {/each}
-    {:else}
-      <p class="loading">loading...</p>
-    {/if}
-  </div>
+    <div class="glass contain">
+      <h2>Best Next Step</h2>
+      <div>
+        <select
+          class="flat"
+          name="membership"
+          id="membership"
+          bind:value={selected}
+          on:change={() => setCurrent()}
+        >
+          {#if cols}
+            {#each cols as col}
+              <option value={col._id}>{col.name}</option>
+            {/each}
+          {:else}
+            <p class="loading">loading...</p>
+          {/if}
+        </select>
+        <slot {selected} />
+      </div>
 
+      <div align="center">
+        {#if current}
+          {#each current as step}
+            <Step {step} />
+          {/each}
+          <div class="glass step">
+            <br />
+            <form>
+              <input
+                class="flat title"
+                type="text"
+                id="title"
+                name="title"
+                placeholder="title..."
+              />
+              <input
+                class="flat desc"
+                type="text"
+                id="desc"
+                name="desc"
+                placeholder="description..."
+              />
+              <input class="flat submit" type="submit" value="+" />
+            </form>
+            <br />
+          </div>
+        {:else}
+          <p class="loading">loading...</p>
+        {/if}
+      </div>
+    </div>
+  </div>
 </main>
 
 <div class="footer">
-	<a href="https://BestNextStep.org">BestNextStep.org</a> - Jake Roggenbuck - <a href="https://jr0.org">jr0.org</a> - <a href="https://github.com/jakeroggenbuck/BestNextStep">Source Code</a>
+  <a href="https://BestNextStep.org">BestNextStep.org</a> - Jake Roggenbuck -
+  <a href="https://jr0.org">jr0.org</a>
+  - <a href="https://github.com/jakeroggenbuck/BestNextStep">Source Code</a>
 </div>
 
 <style>
@@ -98,30 +124,21 @@
   }
 
   .footer {
-	  font-size: 20px;
-	  margin: 10px;
+    font-size: 20px;
+    margin: 10px;
   }
 
   main {
     text-align: center;
     padding: 1em;
-    max-width: 240px;
     margin: 0 auto;
-
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-	margin: 4px;
-	height: 90%;
   }
 
-  h1 {
+  h2 {
     margin-top: 0px;
+    margin-bottom: 5px;
     color: #0b0d21;
-    font-size: 4em;
+    font-size: 3em;
     font-weight: 700;
   }
 

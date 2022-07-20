@@ -11,3 +11,33 @@
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
+
+.flat {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.desc {
+  width: 46%;
+  padding: 10px;
+  margin: 2px;
+}
+
+.title {
+  width: 46%;
+  padding: 10px;
+  margin: 2px;
+}
+
+.submit {
+  padding: 10px;
+  margin: 2px;
+}
+
+.contain {
+  max-width: 1000px;
+  padding: 10px;
+}
