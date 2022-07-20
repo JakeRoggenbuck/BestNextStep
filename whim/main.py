@@ -11,7 +11,7 @@ def create_new():
     home = requests.post(
         "http://localhost:1357/api/v1/step/",
         headers=headers,
-        data={"name": "Jake", "desc": "aassbb", "collection": 3},
+        data={"name": "Jake", "desc": "aassbb", "collection": 1},
     )
 
     pprint(home.json())

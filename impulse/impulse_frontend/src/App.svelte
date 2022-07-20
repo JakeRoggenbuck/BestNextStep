@@ -9,9 +9,28 @@
   let cols;
   let selected = 1;
 
-  function newStep() {
-    alert(newTitle);
-  }
+  let formData = new FormData();
+  formData.append("name", "HEY");
+  formData.append("name", "dsfsf");
+  formData.append("name", "HEY");
+
+  fetch(`http://127.0.0.1:1357/api/v1/step/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      // Test Passowrd for running locally - not used in production
+      Authorization: "Basic " + btoa("Admin:banana"),
+    },
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  function newStep() {}
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/col/`, {

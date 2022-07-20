@@ -40,8 +40,15 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	owner := getUserId(c)
 
-	collection := c.PostForm("collection")
-	fmt.Println(collection)
+	collection := c.Param("collection")
+	fmt.Println("THIS" + collection)
+
+	a := c.PostForm("name")
+	fmt.Println("THIS" + a)
+
+	b := c.PostForm("desc")
+	fmt.Println("THIS" + b)
+
 	col, err := strconv.Atoi(collection)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{

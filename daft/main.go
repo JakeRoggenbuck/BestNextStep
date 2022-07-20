@@ -74,8 +74,8 @@ func main() {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://127.0.0.1:8080", "http://localhost:8080"}
-	corsConfig.AddAllowMethods("OPTIONS")
-	corsConfig.AllowHeaders = []string{"Origin", "Authorization", "content-type"}
+	corsConfig.AddAllowMethods("OPTIONS", "POST")
+	corsConfig.AllowHeaders = []string{"Origin", "Authorization", "content-type", "body", "data"}
 	corsConfig.AllowCredentials = true
 	router.Use(cors.New(corsConfig))
 
