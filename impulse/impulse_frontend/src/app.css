@@ -41,3 +41,14 @@
   max-width: 1000px;
   padding: 10px;
 }
+
+.title-bubble {
+  margin-bottom: 10px;
+}
+
+.top-toggle {
+  margin: 0px;
+  margin-top: 6px;
+  max-width: 900px;
+  width: 97%;
+}

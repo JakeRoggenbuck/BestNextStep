@@ -3,8 +3,15 @@
   import Step from "./Step.svelte";
   import "./app.css";
 
+  let newTitle;
+  let newDesc;
+
   let cols;
   let selected = 1;
+
+  function newStep() {
+    alert(newTitle);
+  }
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/col/`, {
@@ -52,11 +59,14 @@
 
 <main>
   <div align="center">
-    <div class="glass contain">
+    <div class="flat contain title-bubble">
       <h2>Best Next Step</h2>
+    </div>
+
+    <div class="glass contain">
       <div>
         <select
-          class="flat"
+          class="flat top-toggle"
           name="membership"
           id="membership"
           bind:value={selected}
@@ -78,7 +88,7 @@
           {#each current as step}
             <Step {step} />
           {/each}
-          <div class="glass step">
+          <div class="flat step">
             <br />
             <form>
               <input
@@ -87,6 +97,7 @@
                 id="title"
                 name="title"
                 placeholder="title..."
+                bind:value={newTitle}
               />
               <input
                 class="flat desc"
@@ -94,8 +105,14 @@
                 id="desc"
                 name="desc"
                 placeholder="description..."
+                bind:value={newDesc}
               />
-              <input class="flat submit" type="submit" value="+" />
+              <input
+                class="flat submit"
+                type="submit"
+                value="+"
+                on:click={() => newStep()}
+              />
             </form>
             <br />
           </div>
