@@ -17,7 +17,7 @@
   fetch(`http://127.0.0.1:1357/api/v1/step/`, {
     method: "POST",
     headers: {
-      "Content-Type": "multipart/form-data",
+		"Content-Type": "multipart/form-data",
       // Test Passowrd for running locally - not used in production
       Authorization: "Basic " + btoa("Admin:banana"),
     },

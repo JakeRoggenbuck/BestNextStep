@@ -40,13 +40,15 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	owner := getUserId(c)
 
-	collection := c.Param("collection")
+	fmt.Println(c.MultipartForm())
+
+	collection := c.Query("collection")
 	fmt.Println("THIS" + collection)
 
 	a := c.PostForm("name")
 	fmt.Println("THIS" + a)
 
-	b := c.PostForm("desc")
+	b := c.Param("desc")
 	fmt.Println("THIS" + b)
 
 	col, err := strconv.Atoi(collection)
