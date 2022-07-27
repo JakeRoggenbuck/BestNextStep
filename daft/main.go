@@ -10,7 +10,9 @@ import (
 	"github.com/jakeroggenbuck/BestNextStep/daft/user"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"net/http"
 	"os"
+	"time"
 )
 
 func getLogIn() gin.Accounts {
@@ -37,6 +39,15 @@ func dbExists() bool {
 		return true
 	}
 	return false
+}
+
+func corsMiddle() gin.HandlerFunc {
+	return gin.HandlerFunc(func(c *gin.Context) {
+		fmt.Println(c.Request.Method)
+		if c.Request.Method == "OPTIONS" {
+			c.JSON(http.StatusOK, struct{}{})
+		}
+	})
 }
 
 func main() {
@@ -72,12 +83,23 @@ func main() {
 	router.SetTrustedProxies([]string{getLocalIP()})
 	router.LoadHTMLGlob("./web/templates/**/*")
 
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{"http://127.0.0.1:8080", "http://localhost:8080"}
-	corsConfig.AddAllowMethods("OPTIONS", "POST")
-	corsConfig.AllowHeaders = []string{"Origin", "Authorization", "content-type", "body", "data"}
-	corsConfig.AllowCredentials = true
-	router.Use(cors.New(corsConfig))
+	// corsConfig := cors.DefaultConfig()
+	// corsConfig.AllowOrigins = []string{"http://127.0.0.1:8080", "http://localhost:8080"}
+	// corsConfig.AddAllowMethods("OPTIONS", "POST", "DELETE")
+	// corsConfig.AllowHeaders = []string{"Origin", "Authorization", "content-type", "body", "data", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers"}
+	// corsConfig.AllowCredentials = true
+
+	cors := cors.New(cors.Config{
+		AllowOrigins:     []string{"http://127.0.0.1:8080", "http://localhost:8080"},
+		AllowMethods:     []string{"PUT", "PATCH", "OPTIONS", "POST", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Authorization", "content-type", "body", "data", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	})
+
+	router.Use(cors)
+	router.Use(corsMiddle())
 
 	/*
 
@@ -118,8 +140,10 @@ func main() {
 	authAccount := getLogIn()
 	authedSubRoute := router.Group("/api/v1/", gin.BasicAuth(authAccount))
 	{
+
 		stepSubRoute := authedSubRoute.Group("/step/")
 		{
+			stepSubRoute.GET("/aa", preflight)
 			stepSubRoute.GET("/", func(c *gin.Context) { allStep(c, stepRepository) })
 			stepSubRoute.POST("/", func(c *gin.Context) { addStep(c, stepRepository) })
 			stepSubRoute.PUT("/:id", func(c *gin.Context) { updateStep(c, stepRepository) })

@@ -9,28 +9,31 @@
   let cols;
   let selected = 1;
 
-  let formData = new FormData();
-  formData.append("name", "NAME");
-  formData.append("desc", "DESC");
-  formData.append("collection", selected);
+  function newStep() {
+    let formData = new FormData();
+    formData.append("name", newTitle);
+    formData.append("desc", newDesc);
+    formData.append("collection", selected);
 
-  fetch(`http://127.0.0.1:1357/api/v1/step/`, {
-    method: "POST",
-    headers: {
-      // Test Passowrd for running locally - not used in production
-      Authorization: "Basic " + btoa("Admin:banana"),
-    },
-    body: formData,
-  })
-    .then((r) => r.json())
-    .then((data) => {
-      console.log(data);
+    fetch(`http://127.0.0.1:1357/api/v1/step/`, {
+      method: "POST",
+      headers: {
+        // Test Passowrd for running locally - not used in production
+        Authorization: "Basic " + btoa("Admin:banana"),
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "access-control-allow-origin, access-control-allow-headers",
+      },
+      body: formData,
     })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  function newStep() {}
+      .then((r) => r.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   onMount(async () => {
     await fetch(`http://127.0.0.1:1357/api/v1/col/`, {
@@ -111,7 +114,7 @@
             <br />
             <form>
               <input
-                class="flat title"
+                class="flat title-input"
                 type="text"
                 id="title"
                 name="title"
@@ -119,7 +122,7 @@
                 bind:value={newTitle}
               />
               <input
-                class="flat desc"
+                class="flat desc-input"
                 type="text"
                 id="desc"
                 name="desc"

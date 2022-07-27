@@ -25,4 +25,3 @@ func TestHash(t *testing.T) {
 		t.Errorf("hashes where the same")
 	}
 }
-
