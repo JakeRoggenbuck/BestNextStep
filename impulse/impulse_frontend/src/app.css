@@ -1,6 +1,8 @@
 .step {
   margin: 10px;
   max-width: 900px;
+  position: relative;
+  min-height: 100px;
 }
 
 .glass {
@@ -21,9 +23,9 @@
 }
 
 .desc {
-  width: 46%;
-  padding: 10px;
-  margin: 2px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: 30px;
 }
 
 .title {
@@ -51,4 +53,48 @@
   margin-top: 6px;
   max-width: 900px;
   width: 97%;
+}
+
+.delete {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+}
+
+.delete:hover {
+  color: #ec7063;
+}
+
+.edit {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  right: 40px;
+}
+
+.edit:hover {
+  color: #58d68d;
+}
+
+.up {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  left: 10px;
+}
+
+.up:hover {
+  color: #58d68d;
+}
+
+.down {
+  color: #839192;
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+}
+
+.down:hover {
+  color: #58d68d;
 }
