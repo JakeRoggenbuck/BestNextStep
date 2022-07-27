@@ -5,6 +5,10 @@
   min-height: 100px;
 }
 
+.done-step {
+  background: #abebc6;
+}
+
 .desc-input {
   margin: 10px;
   padding: 10px;
@@ -87,6 +91,17 @@
   color: #58d68d;
 }
 
+.done {
+  color: #839192;
+  position: absolute;
+  top: 16px;
+  right: 72px;
+}
+
+.done:hover {
+  color: #58d68d;
+}
+
 .up {
   color: #839192;
   position: absolute;
@@ -106,5 +121,9 @@
 }
 
 .down:hover {
+  color: #58d68d;
+}
+
+.checked {
   color: #58d68d;
 }
