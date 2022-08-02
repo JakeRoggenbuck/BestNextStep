@@ -37,11 +37,19 @@ func allStep(c *gin.Context, repo *step.SQLiteRepository) {
 	})
 }
 
+func preflight(c *gin.Context) {
+	fmt.Println("preflight hit!!!!")
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, method")
+	c.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	c.JSON(http.StatusOK, struct{}{})
+}
+
 func addStep(c *gin.Context, repo *step.SQLiteRepository) {
 	owner := getUserId(c)
 
 	collection := c.PostForm("collection")
-	fmt.Println(collection)
+
 	col, err := strconv.Atoi(collection)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{

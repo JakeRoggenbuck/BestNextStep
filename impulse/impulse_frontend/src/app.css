@@ -1,6 +1,22 @@
 .step {
   margin: 10px;
   max-width: 900px;
+  position: relative;
+  min-height: 100px;
+}
+
+.done-step {
+  background: #abebc6;
+}
+
+.desc-input {
+  margin: 10px;
+  padding: 10px;
+}
+
+.title-input {
+  margin: 10px;
+  padding: 10px;
 }
 
 .glass {
@@ -10,4 +26,104 @@
   -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.flat {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.desc {
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: 30px;
+}
+
+.title {
+  width: 46%;
+  padding: 10px;
+  margin: 2px;
+}
+
+.submit {
+  padding: 10px;
+  margin: 2px;
+}
+
+.contain {
+  max-width: 1000px;
+  padding: 10px;
+}
+
+.title-bubble {
+  margin-bottom: 10px;
+}
+
+.top-toggle {
+  margin: 0px;
+  margin-top: 6px;
+  max-width: 900px;
+  width: 97%;
+}
+
+.delete {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+}
+
+.delete:hover {
+  color: #ec7063;
+}
+
+.edit {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  right: 40px;
+}
+
+.edit:hover {
+  color: #58d68d;
+}
+
+.done {
+  color: #839192;
+  position: absolute;
+  top: 16px;
+  right: 72px;
+}
+
+.done:hover {
+  color: #58d68d;
+}
+
+.up {
+  color: #839192;
+  position: absolute;
+  top: 15px;
+  left: 10px;
+}
+
+.up:hover {
+  color: #58d68d;
+}
+
+.down {
+  color: #839192;
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+}
+
+.down:hover {
+  color: #58d68d;
+}
+
+.checked {
+  color: #58d68d;
 }
